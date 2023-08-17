@@ -29,14 +29,16 @@ public class NextFriday13 implements TemporalAdjuster {
 //		return ld;
 		Temporal resTempolar = temporal;
 		int localDate = temporal.get(ChronoField.DAY_OF_MONTH);
-		int plusToGetFriday = localDate - 13;
-		if(plusToGetFriday < 0) {
-			resTempolar = resTempolar.plus(Math.abs(plusToGetFriday), ChronoUnit.DAYS);
-			
-		}else if(plusToGetFriday >= 0) {
-			resTempolar = resTempolar.plus(1, ChronoUnit.MONTHS)
-					.minus(Math.abs(plusToGetFriday), ChronoUnit.DAYS);
-		}
+		int plusToGetFriday13 = localDate - 13;
+//		if(plusToGetFriday < 0) {
+//			resTempolar = resTempolar.plus(Math.abs(plusToGetFriday), ChronoUnit.DAYS);
+//			
+//		}else if(plusToGetFriday >= 0) {
+//			resTempolar = resTempolar.plus(1, ChronoUnit.MONTHS)
+//					.minus(Math.abs(plusToGetFriday), ChronoUnit.DAYS);
+//		}
+		resTempolar = plusToGetFriday13 < 0 ?  resTempolar.plus(Math.abs(plusToGetFriday13), ChronoUnit.DAYS):
+			resTempolar.plus(1, ChronoUnit.MONTHS).minus(Math.abs(plusToGetFriday13), ChronoUnit.DAYS);	
 		while(resTempolar.get(ChronoField.DAY_OF_WEEK) != 5) {
 			resTempolar = resTempolar.plus(1, ChronoUnit.MONTHS);
 		}
