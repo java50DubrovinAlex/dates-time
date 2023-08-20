@@ -11,9 +11,8 @@ public class NextFriday13 implements TemporalAdjuster {
 
 	@Override
 	public Temporal adjustInto(Temporal temporal) {
-		if(!temporal.isSupported(ChronoUnit.YEARS)&&temporal.isSupported(ChronoUnit.MONTHS)
-				&&temporal.isSupported(ChronoUnit.DAYS))
-		{
+		if (!temporal.isSupported(ChronoUnit.YEARS) && temporal.isSupported(ChronoUnit.MONTHS)
+				&& temporal.isSupported(ChronoUnit.DAYS)) {
 			throw new UnsupportedTemporalTypeException("must support yyyy.mm.dd");
 		}
 //		LocalDate  ld = LocalDate.from(temporal);
@@ -37,9 +36,9 @@ public class NextFriday13 implements TemporalAdjuster {
 //			resTempolar = resTempolar.plus(1, ChronoUnit.MONTHS)
 //					.minus(Math.abs(plusToGetFriday), ChronoUnit.DAYS);
 //		}
-		resTempolar = plusToGetFriday13 < 0 ?  resTempolar.plus(Math.abs(plusToGetFriday13), ChronoUnit.DAYS):
-			resTempolar.plus(1, ChronoUnit.MONTHS).minus(Math.abs(plusToGetFriday13), ChronoUnit.DAYS);	
-		while(resTempolar.get(ChronoField.DAY_OF_WEEK) != 5) {
+		resTempolar = plusToGetFriday13 < 0 ? resTempolar.plus(Math.abs(plusToGetFriday13), ChronoUnit.DAYS)
+				: resTempolar.plus(1, ChronoUnit.MONTHS).minus(Math.abs(plusToGetFriday13), ChronoUnit.DAYS);
+		while (resTempolar.get(ChronoField.DAY_OF_WEEK) != 5) {
 			resTempolar = resTempolar.plus(1, ChronoUnit.MONTHS);
 		}
 		return resTempolar;
