@@ -2,11 +2,6 @@ package telran.time.applications;
 
 import java.time.*;
 import java.time.format.TextStyle;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -35,20 +30,13 @@ public class PrintCalendar {
 		if(recordArguments.firstDay() != null) {
 			DayOfWeek [] newWeekDayOrder = new DayOfWeek [res.length];
 			int indexOfFirstDay = Arrays.binarySearch(res, recordArguments.firstDay());
-			int firstPartAndIndex = newWeekDayOrder.length - indexOfFirstDay;
-			int index = 0;
-			for(int i = 0; i < firstPartAndIndex; i++ ) {
-				newWeekDayOrder[i] = res[indexOfFirstDay++];
-			}
-			for(int i = firstPartAndIndex; i < newWeekDayOrder.length; i++) {
-				newWeekDayOrder[i] = res[index++];
-			}
+			System.arraycopy(res, indexOfFirstDay, newWeekDayOrder, 0, res.length - indexOfFirstDay);
+			System.arraycopy(res, 0, newWeekDayOrder, res.length - indexOfFirstDay, indexOfFirstDay);
 			res = newWeekDayOrder;
 			}
-			
-		
 		return res;
-	}
+		}
+	
 
 	private static void printCalendar(RecordArguments recordArguments) {
 		printTitle(recordArguments.month(), recordArguments.year());
@@ -60,7 +48,7 @@ public class PrintCalendar {
 	private static void printDays(int month, int year) {
 
 		int nDays = getMonthDays(month, year);
-		int currentWeekDay = getFirstMonthWeekDay(month, year);
+		int currentWeekDay = getFirstMonthWeekDay(month, year, weekDays);
 		System.out.printf("%s", " ".repeat(getFirstColumnOffset(currentWeekDay)));
 		for(int day = 1; day <= nDays; day++) {
 			System.out.printf("%4d", day);
@@ -79,21 +67,23 @@ public class PrintCalendar {
 		return COLUMN_WIDTH * (currentWeekDay - 1);
 	}
 
-	private static int getFirstMonthWeekDay(int month, int year) {
-		int newFirstDayWeek = getFirstDayWeeekNumber(weekDays);
+	private static int getFirstMonthWeekDay(int month, int year, DayOfWeek[] weekDays) {
 		LocalDate ld = LocalDate.of(year, month, 1);
-		return ld.get(ChronoField.DAY_OF_WEEK) ;
+		String newFirstDay = ld.getDayOfWeek().name();
+		int FirstMonthWeekDay = getNewFirstMonthWeekDay(weekDays, newFirstDay);
+		return FirstMonthWeekDay;
 	}
 
-	private static int getFirstDayWeeekNumber(DayOfWeek[] weekDays ) {
-//		LocalDate ld = LocalDate.now();
-//        DayOfWeek firstDayOfWeek = weekDays[0]; // Assumes that the array starts with SUNDAY
-//
-//        TemporalField field = WeekFields.of(firstDayOfWeek, 1).dayOfWeek();
-//        int firstDayOfWeekNumber = ld.with(TemporalAdjusters.previousOrSame(firstDayOfWeek)).get(field);
-//
-//        return firstDayOfWeekNumber;
-		return weekDays[0].ordinal();
+
+	private static int getNewFirstMonthWeekDay(DayOfWeek[] weekDays, String newFirstDay) {
+		int res = 0;
+		for(int i = 0; i < newFirstDay.length();i++) {
+			if(weekDays[i].toString().equals(newFirstDay)) {
+				 
+				 res = i + 1;
+			}
+		}
+		return res;
 	}
 
 	private static int getMonthDays(int month, int year) {
@@ -104,7 +94,7 @@ public class PrintCalendar {
 	private static void printWeekDays(DayOfWeek[] weekDays) {
 		System.out.printf("%s", " ".repeat(WEEK_DAYS_OFFSET));
 		for(DayOfWeek dayWeek: weekDays) {
-			System.out.printf("%s ",dayWeek.getDisplayName(TextStyle.SHORT, LOCALE));
+			System.out.printf("%s  ",dayWeek.getDisplayName(TextStyle.SHORT, LOCALE));
 		}
 		System.out.println();
 		
